@@ -59,7 +59,11 @@ class ProductService {
 
         try {
             const categories = await this.productRepository.getAllCategories();
-            return categories;
+
+            const data = categories.map((item) => {
+                return item.category
+            })
+            return data;
 
         } catch (error) {
             console.log("error from product service > getAllCategories", error);
@@ -67,11 +71,15 @@ class ProductService {
         }
     }
 
-    getAllSubCategories(category){
+    async getAllSubCategories(category){
 
         try {
-            const subCategories = this.productRepository.getAllSubCategories(category);
-            return subCategories;
+            const subCategories = await this.productRepository.getAllSubCategories(category);
+
+            const data = subCategories.map((item) => {
+                return item.subCategory
+            })
+            return data;
         } catch (error) {
             console.log("error from product service > getAllSubCategories", error);
             throw error;

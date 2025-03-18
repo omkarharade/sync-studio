@@ -16,7 +16,7 @@ router.post("/upload-csv", singleFileUpload, upload)
 router.get("/products/category/", getByCategory);
 router.get("/products/sub-category/", getBySubCategory);
 router.get("/products/part-number/", getByPartNumber)
-router.get("/products/categories/", getCategories)
+router.get("/products/get-categories/", getCategories)
 router.get("/products/sub-categories/", getSubCategories)
 
 

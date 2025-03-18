@@ -35,7 +35,7 @@ const getByCategory = async (req, res) => {
 
 	try {
 
-		const category = req.body.category;
+		const {category} = req.query;
 
 		const data = await productService.getProductsByCategory(category);
 
@@ -62,8 +62,8 @@ const getBySubCategory = async (req, res) => {
 
 	try {
 		
-		const subCategory = req.body.subCategory;
-
+		const {subCategory} = req.query;
+		console.log("subcategory == ", subCategory)
 		const data  = await productService.getProductsBySubCategory(subCategory);
 
 		return res.status(SuccessCodes.OK).json({
@@ -136,7 +136,7 @@ const getSubCategories = async (req, res) => {
 
 	try {
 
-		const category = req.body.category;
+		const {category} = req.query;
 		console.log("category === ", category);
 		const subCategories = await productService.getAllSubCategories(category);
 
