@@ -36,6 +36,7 @@ class ProductService {
 
         try {
             const productsData = await this.productRepository.getAllProductsBySubCategory(subCategory);
+            
             return productsData;
 
         } catch (error) {
