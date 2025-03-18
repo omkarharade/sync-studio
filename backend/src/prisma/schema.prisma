@@ -20,17 +20,74 @@ model User {
 }
 
 model Products {
-  id               Int     @id @default(autoincrement())
-  category         String
-  subCategory      String
-  partNo           String  @unique
-  datasheetLink    String
-  vdssV            Int?    
-  vgsV             Int?    
-  vthMinV          Int?    
-  vthMaxV          Int?    
-  idByTA25          Int?    
-  vthVMax          Int?    
-  ron4_5V_mOhmMax  Int?    
-  ron10V_mOhmMax   Int?    
+  partNo        String  @id
+  category      String
+  subCategory   String
+  datasheetLink String
+
+  // One-to-one relations
+  vdss         VDSS?
+  vgs          VGS?
+  vthMin       VTHMin?
+  vthMax       VTHMax?
+  idByTA25     IDByTA25?
+  vthVMax      VTHVMax?
+  ron4_5V      Ron4_5VMax?
+  ron10V       Ron10VMax?
+}
+
+model VDSS {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model VGS {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model VTHMin {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model VTHMax {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model IDByTA25 {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model VTHVMax {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model Ron4_5VMax {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
+}
+
+model Ron10VMax {
+  partNo  String  @id
+  value   Int?
+
+  product Products @relation(fields: [partNo], references: [partNo], onDelete: Cascade)
 }
