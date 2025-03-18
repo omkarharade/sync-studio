@@ -9,13 +9,10 @@ const { formatValue } = require("../utils/formatTableValues");
 const prisma = new PrismaClient();
 
 class ProductRepository {
-
-    Omega = '\u03A9';
-
 	columnName = {
 		category: "Category",
 		subCategory: "Sub-category",
-        partNumber: "Part No.",
+		partNumber: "Part No.",
 		datasheetLink: "Datasheet Link (PDF)",
 		vdss: "VDSS\r\nV",
 		vgs: "VGS\r\nV",
@@ -26,7 +23,6 @@ class ProductRepository {
 		ron4_5V: `Ron 4.5v\n(mΩ)Max.`,
 		ron10V: `Ron 10v\n(mΩ)Max.`,
 	};
-
 
 	uploadProductData(filePath) {
 		try {
@@ -40,12 +36,10 @@ class ProductRepository {
 				ron4_5V = [],
 				ron10V = [];
 
-
 			fs.createReadStream(filePath)
 				.pipe(fastCsv.parse({ headers: true }))
 				.on("data", (row) => {
-                    
-                    const partNo = row[this.columnName.partNumber]
+					const partNo = row[this.columnName.partNumber];
 
 					products.push({
 						partNo: row[this.columnName.partNumber],
@@ -103,7 +97,6 @@ class ProductRepository {
 				})
 
 				.on("end", async () => {
-
 					console.log("columnName == ", this.columnName);
 					console.log("products == ", products);
 					console.log("vdss == ", vdss);
@@ -114,7 +107,6 @@ class ProductRepository {
 					console.log("vthVMax == ", vthVMax);
 					console.log("ron4_5V == ", ron4_5V);
 					console.log("ron10V == ", ron10V);
-                    console.log("prisma == ", prisma)
 
 					await prisma.products.createMany({
 						data: products,
@@ -147,10 +139,164 @@ class ProductRepository {
 						skipDuplicates: true,
 					});
 				});
-
 		} catch (error) {
 			console.log(
 				"Something went wrong in the product Repository when uploading csv data"
+			);
+			throw { error };
+		}
+	}
+
+	async getAllProductsByCategory(category) {
+		try {
+			const products = await prisma.products.findMany({
+				where: {
+					category: category,
+
+					OR: [
+						{ vdss: { value: { not: null } } },
+						{ vgs: { value: { not: null } } },
+						{ vthMin: { value: { not: null } } },
+						{ vthMax: { value: { not: null } } },
+						{ idByTA25: { value: { not: null } } },
+						{ vthVMax: { value: { not: null } } },
+						{ ron4_5V: { value: { not: null } } },
+						{ ron10V: { value: { not: null } } },
+					],
+				},
+				include: {
+					vdss: true,
+					vgs: true,
+					vthMin: true,
+					vthMax: true,
+					idByTA25: true,
+					vthVMax: true,
+					ron4_5V: true,
+					ron10V: true,
+				},
+			});
+
+			return products;
+		} catch (error) {
+			console.log(
+				"something went wrong in productRepository > getAllProductsByCategory"
+			);
+			throw { error };
+		}
+	}
+
+	async getAllProductsBySubCategory(subCategory) {
+		try {
+			const products = await prisma.products.findMany({
+				where: {
+					subCategory: subCategory,
+
+					OR: [
+						{ vdss: { value: { not: null } } },
+						{ vgs: { value: { not: null } } },
+						{ vthMin: { value: { not: null } } },
+						{ vthMax: { value: { not: null } } },
+						{ idByTA25: { value: { not: null } } },
+						{ vthVMax: { value: { not: null } } },
+						{ ron4_5V: { value: { not: null } } },
+						{ ron10V: { value: { not: null } } },
+					],
+				},
+				include: {
+					vdss: true,
+					vgs: true,
+					vthMin: true,
+					vthMax: true,
+					idByTA25: true,
+					vthVMax: true,
+					ron4_5V: true,
+					ron10V: true,
+				},
+			});
+
+			return products;
+		} catch (error) {
+			console.log(
+				"something went wrong in productRepository > getAllProductsBySubCategory"
+			);
+			throw { err };
+		}
+	}
+
+	async getProductsByPartNumber(partNumber) {
+		try {
+			const products = await prisma.products.findUnique({
+				where: {
+					partNo: partNumber,
+
+					OR: [
+						{ vdss: { value: { not: null } } },
+						{ vgs: { value: { not: null } } },
+						{ vthMin: { value: { not: null } } },
+						{ vthMax: { value: { not: null } } },
+						{ idByTA25: { value: { not: null } } },
+						{ vthVMax: { value: { not: null } } },
+						{ ron4_5V: { value: { not: null } } },
+						{ ron10V: { value: { not: null } } },
+					],
+				},
+				include: {
+					vdss: true,
+					vgs: true,
+					vthMin: true,
+					vthMax: true,
+					idByTA25: true,
+					vthVMax: true,
+					ron4_5V: true,
+					ron10V: true,
+				},
+			});
+
+			return products;
+		} catch (error) {
+			console.log(
+				"something went wrong in productRepository > getProductsByPartNumber"
+			);
+			throw { err };
+		}
+	}
+
+	async getAllCategories() {
+		try {
+			const categoryList = await prisma.products.findMany({
+                select: {
+                    category: true,
+                  },
+                  distinct: ['category'],
+			});
+
+			return categoryList;
+		} catch (error) {
+			console.log(
+				"something went wrong in productRepository > getAllCategories"
+			);
+			throw { error };
+		}
+	}
+
+	async getAllSubCategories(category) {
+		try {
+			const subCategoryList = await prisma.products.findMany({
+				where: {
+					category: category,
+				},
+
+				select: {
+					subCategory: true
+				},
+
+                distinct: ['subCategory']
+			});
+
+			return subCategoryList;
+		} catch (error) {
+			console.log(
+				"something went wrong in productRepository > getAllSubCategories"
 			);
 			throw { error };
 		}

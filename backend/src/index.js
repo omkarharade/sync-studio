@@ -18,15 +18,6 @@ const setupAndStartServer = async () => {
 
 	app.use("/api", ApiRoutes);
 
-    app.use("/", function (req, res){
-
-        res.json({
-            message: "backend is up and running"
-        });
-
-    })
-
-
 	app.listen(PORT, async () => {
 		console.log(`Server started at ${PORT}`);
 	});
